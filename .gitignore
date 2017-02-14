@@ -18,6 +18,7 @@ logs
 
 # External tool builders
 .externalToolBuilders/
+.cache-main
 
 # Locally stored "Eclipse launch configurations"
 *.launch

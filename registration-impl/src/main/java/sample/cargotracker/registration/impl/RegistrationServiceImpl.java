@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementation of the RegistrationService.
+ * Look at circuit breaker information: http://localhost:25003/_status/circuit-breaker/current
  */
 public class RegistrationServiceImpl implements RegistrationService {
 
@@ -60,14 +61,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public ServiceCall<NotUsed, Cargo, Done> register() {
         return (id, request) -> {
-            // Publish received entity into topic named "Topic"
+            /* Publish received entity into topic named "Topic" */
             PubSubRef<Cargo> topic = topics.refFor(TopicId.of(Cargo.class, "topic"));
             topic.publish(request);
             log.info("Cargo ID: {}.", request.getId());
-            // Look up the hello world entity for the given ID.
+            /* Look up the Cargo entity for the given ID. */
             PersistentEntityRef<RegistrationCommand> ref =
                     persistentEntityRegistry.refFor(CargoEntity.class, request.getId());
-            // Tell the entity to use the Cargo information in the request.
+            /* Tell the entity to use the Cargo information in the request. */
             return ref.ask(RegisterCargo.of(request));
         };
     }
